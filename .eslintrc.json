@@ -1,0 +1,31 @@
+{
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "env": {
+        "es6": true,
+        "commonjs": true,
+        "node": true
+    },
+    "rules": {
+        "linebreak-style": "error",
+        "eol-last": "error",
+        "indent": "error",
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "no-var": "error",
+        "semi": "error",
+        "prefer-arrow-callback": [
+            "error",
+            {
+                "allowUnboundThis": false
+            }
+        ],
+        "no-console": "off",
+        "no-control-regex": "off"
+    }
+}

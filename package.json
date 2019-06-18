@@ -1,0 +1,28 @@
+{
+  "name": "hue-bridge-emulator",
+  "version": "0.0.1",
+  "description": "Interface with hue compatible devices",
+  "main": "examples/color-bulb.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tim-hellhake/hue-bridge-emulator.git"
+  },
+  "author": "Tim Hellhake",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/tim-hellhake/hue-bridge-emulator/issues"
+  },
+  "homepage": "https://github.com/tim-hellhake/hue-bridge-emulator#readme",
+  "devDependencies": {
+    "babel-eslint": "^10.0.2",
+    "eslint": "^5.16.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "body-parser": "^1.19.0"
+  }
+}

@@ -1,0 +1,70 @@
+{
+    "state": {
+        "on": true,
+        "bri": 254,
+        "hue": 0,
+        "sat": 0,
+        "effect": "none",
+        "xy": [
+            0,
+            0
+        ],
+        "ct": 350,
+        "alert": "none",
+        "colormode": "ct",
+        "mode": "homeautomation",
+        "reachable": true
+    },
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T00:00:00"
+    },
+    "type": "Extended color light",
+    "name": "Kitchen",
+    "modelid": "LCT015",
+    "manufacturername": "Philips",
+    "productname": "Hue color lamp",
+    "capabilities": {
+        "certified": true,
+        "control": {
+            "mindimlevel": 1000,
+            "maxlumen": 806,
+            "colorgamuttype": "C",
+            "colorgamut": [
+                [
+                    0.6915,
+                    0.3083
+                ],
+                [
+                    0.1700,
+                    0.7000
+                ],
+                [
+                    0.1532,
+                    0.0475
+                ]
+            ],
+            "ct": {
+                "min": 153,
+                "max": 500
+            }
+        },
+        "streaming": {
+            "renderer": true,
+            "proxy": true
+        }
+    },
+    "config": {
+        "archetype": "sultanbulb",
+        "function": "mixed",
+        "direction": "omnidirectional",
+        "startup": {
+            "mode": "safety",
+            "configured": true
+        }
+    },
+    "uniqueid": "00:11:22:33:44:55:66:77-88",
+    "swversion": "1.46.13_r26312",
+    "swconfigid": "52E3234B",
+    "productid": "Philips-LCT015-1-A19ECLv5"
+}
