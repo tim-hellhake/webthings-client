@@ -1,6 +1,6 @@
 {
   "name": "hue-bridge-emulator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Interface with hue compatible devices",
   "main": "examples/color-bulb.js",
   "scripts": {

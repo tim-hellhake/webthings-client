@@ -8,3 +8,5 @@ const HueBridgeEmulator = require('../hue-bridge-emulator');
 
 const hueBridgeEmulator = new HueBridgeEmulator();
 hueBridgeEmulator.start();
+hueBridgeEmulator.addLight('foo');
+hueBridgeEmulator.addLight('bar');

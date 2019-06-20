@@ -38,10 +38,9 @@ function getIpAddress() {
 
 class HueBridgeEmulator {
     start() {
-        this.lightState = {};
+        this.lights = {};
 
         const descriptionPath = '/description.xml';
-        const lightId = '1';
         const prefix = '001788';
         const postfix = '7ebe7d';
         const serialNumber = `${prefix}${postfix}`;
@@ -69,30 +68,42 @@ class HueBridgeEmulator {
         });
 
         app.get('/api/foo/lights', (req, res) => {
-            res.status(200).contentType('application/json').send(JSON.stringify({ [lightId]: this.getLight() }));
+            res.status(200).contentType('application/json').send(JSON.stringify(this.lights));
         });
 
         app.get('/api/foo/lights/:id', (req, res) => {
-            res.status(200)
-                .contentType('application/json')
-                .send(JSON.stringify(this.getLight()));
+            const light = this.lights[req.params.id];
+
+            if (light) {
+                res.status(200)
+                    .contentType('application/json')
+                    .send(JSON.stringify(light));
+            } else {
+                res.status(404).send();
+            }
         });
 
         app.put('/api/foo/lights/:id/state', (req, res) => {
             const id = req.params.id;
+            const light = this.lights[id];
             const state = req.body;
-            const result = [];
             debug(`Received state change ${JSON.stringify(state)}`);
 
-            for (let key in state) {
-                const value = state[key];
-                this.lightState[key] = value;
-                result.push({ success: { [`/lights/${id}/state/${key}`]: value } });
-            }
+            if (light) {
+                const result = [];
 
-            res.status(200)
-                .contentType('application/json')
-                .send(JSON.stringify(result));
+                for (let key in state) {
+                    const value = state[key];
+                    light.state[key] = value;
+                    result.push({ success: { [`/lights/${id}/state/${key}`]: value } });
+                }
+
+                res.status(200)
+                    .contentType('application/json')
+                    .send(JSON.stringify(result));
+            } else {
+                res.status(404).send();
+            }
         });
 
         const restServer = app.listen(port, () => {
@@ -141,12 +152,12 @@ class HueBridgeEmulator {
         });
     }
 
-
-
-    getLight() {
+    addLight(name) {
         const light = Object.assign({}, hueColorLamp);
-        light.state = Object.assign(light.state, this.lightState);
-        return light;
+        light.name = name;
+        const ids = Object.keys(this.lights);
+        const lastId = ids.length > 0 ? Math.max.apply(null, ids) + 1 : 0;
+        this.lights[lastId] = light;
     }
 
     createDescription(ip, port, serialNumber, uuid) {
