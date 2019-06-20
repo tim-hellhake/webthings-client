@@ -37,12 +37,9 @@ function getIpAddress() {
 }
 
 class HueBridgeEmulator {
-    constructor(onChange) {
-        this.onChange = onChange;
-    }
-
     start() {
         this.lights = {};
+        this.callbacks = {};
 
         const descriptionPath = '/description.xml';
         const prefix = '001788';
@@ -90,6 +87,7 @@ class HueBridgeEmulator {
         app.put('/api/foo/lights/:id/state', (req, res) => {
             const id = req.params.id;
             const light = this.lights[id];
+            const callback = this.callbacks[id];
             const state = req.body;
             debug(`Received state change ${JSON.stringify(state)}`);
 
@@ -99,9 +97,9 @@ class HueBridgeEmulator {
                 for (let key in state) {
                     const value = state[key];
 
-                    if (this.onChange) {
+                    if (callback) {
                         try {
-                            this.onChange(light.name, key, value);
+                            callback(key, value);
                         } catch (err) {
                             console.error(err);
                         }
@@ -165,12 +163,16 @@ class HueBridgeEmulator {
         });
     }
 
-    addLight(name) {
+    addLight(name, onChange) {
         const light = Object.assign({}, hueColorLamp);
         light.name = name;
         const ids = Object.keys(this.lights);
         const lastId = ids.length > 0 ? Math.max.apply(null, ids) + 1 : 0;
         this.lights[lastId] = light;
+
+        if (onChange) {
+            this.callbacks[lastId] = onChange;
+        }
     }
 
     createDescription(ip, port, serialNumber, uuid) {
