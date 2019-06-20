@@ -6,7 +6,11 @@
 
 const HueBridgeEmulator = require('../hue-bridge-emulator');
 
-const hueBridgeEmulator = new HueBridgeEmulator();
+const hueBridgeEmulator = new HueBridgeEmulator(onChange);
 hueBridgeEmulator.start();
 hueBridgeEmulator.addLight('foo');
 hueBridgeEmulator.addLight('bar');
+
+function onChange(name, key, value) {
+    console.log(`${name}.${key} => ${value}`);
+}

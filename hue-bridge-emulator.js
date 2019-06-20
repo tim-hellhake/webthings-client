@@ -37,6 +37,10 @@ function getIpAddress() {
 }
 
 class HueBridgeEmulator {
+    constructor(onChange) {
+        this.onChange = onChange;
+    }
+
     start() {
         this.lights = {};
 
@@ -94,6 +98,15 @@ class HueBridgeEmulator {
 
                 for (let key in state) {
                     const value = state[key];
+
+                    if (this.onChange) {
+                        try {
+                            this.onChange(light.name, key, value);
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    }
+
                     light.state[key] = value;
                     result.push({ success: { [`/lights/${id}/state/${key}`]: value } });
                 }
