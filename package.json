@@ -1,6 +1,6 @@
 {
   "name": "hue-bridge-emulator",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Interface with hue compatible devices",
   "main": "index.js",
   "scripts": {

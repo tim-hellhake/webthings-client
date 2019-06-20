@@ -6,6 +6,6 @@
 
 'use strict';
 
-const HueBridgeEmulator = require('hue-bridge-emulator');
+const HueBridgeEmulator = require('./hue-bridge-emulator');
 
 module.exports = HueBridgeEmulator;
