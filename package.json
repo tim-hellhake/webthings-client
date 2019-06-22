@@ -1,6 +1,6 @@
 {
   "name": "webthings-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Access Web Things via the REST api",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/tim-hellhake/webthings-client#readme",
   "devDependencies": {
     "typescript": "^3.5.2",
-    "@types/node": "^12.0.8"
+    "@types/node": "^12.0.10"
   },
   "dependencies": {
     "node-fetch": "^2.6.0",
