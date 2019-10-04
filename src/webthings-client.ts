@@ -58,6 +58,16 @@ export class WebThingsClient {
             }
         });
 
+        if (response.status !== 200) {
+            throw `${response.status}: ${response.statusText}`;
+        }
+
+        const contentType = response.headers.get('Content-Type') || '';
+
+        if (contentType.indexOf('application/json') < 0) {
+            throw `Content-Type is '${response.headers.get('Content-Type')}' but expected 'application/json'`;
+        }
+
         return await response.json();
     }
 
@@ -71,6 +81,16 @@ export class WebThingsClient {
             },
             body: JSON.stringify(value)
         });
+
+        if (response.status !== 200) {
+            throw `${response.status}: ${response.statusText}`;
+        }
+
+        const contentType = response.headers.get('Content-Type') || '';
+
+        if (contentType.indexOf('application/json') < 0) {
+            throw `Content-Type is '${response.headers.get('Content-Type')}' but expected 'application/json'`;
+        }
 
         return await response.json();
     }
