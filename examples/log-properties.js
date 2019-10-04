@@ -14,7 +14,7 @@ const webThingsClient = new WebThingsClient('localhost', 8080, token);
     const devices = await webThingsClient.getDevices();
 
     for (const device of devices) {
-        console.log(`---${device.name}---`);
+        console.log(`---${device.title}---`);
 
         for (const propertyName in device.properties) {
             try {

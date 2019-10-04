@@ -5,7 +5,7 @@
  */
 
 export interface Device {
-    name: string;
+    title: string;
     type: string;
     '@context': string;
     '@type': string[];
