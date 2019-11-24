@@ -4,11 +4,44 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import fetch from 'node-fetch';
+import fetch, { RequestInit } from 'node-fetch';
 import { Device, Property } from './device';
+import { Agent } from 'https';
 
 export class WebThingsClient {
-    constructor(private address: string, private port: number, private token: string) {
+    public static async local(token: string) {
+        let address = 'localhost';
+        let port = 8080;
+        let https = false;
+        let skipValidation = false;
+        console.log(`Probing port ${port}`);
+        const response = await fetch(`http://${address}:${port}`, {
+            redirect: "manual"
+        });
+
+        if (response.headers.get("Location")) {
+            port = 4443;
+            https = true;
+            skipValidation = true;
+            console.log(`HTTPS seems to be active, using port ${port} instead`);
+        }
+
+        return new WebThingsClient('localhost', port, token, https, skipValidation);
+    }
+
+    private protocol: string;
+    private fetchOptions: RequestInit = {};
+
+    constructor(private address: string, private port: number, private token: string, useHttps = false, skipValidation = false) {
+        this.protocol = useHttps ? 'https' : 'http';
+
+        if (skipValidation) {
+            this.fetchOptions = {
+                agent: new Agent({
+                    rejectUnauthorized: false
+                })
+            };
+        }
     }
 
     public getDevices(): Promise<Device[]> {
@@ -50,7 +83,8 @@ export class WebThingsClient {
     }
 
     private async get(path: String) {
-        const response = await fetch(`http://${this.address}:${this.port}${path}`, {
+        const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
+            ...this.fetchOptions,
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -72,7 +106,8 @@ export class WebThingsClient {
     }
 
     private async put(path: String, value: {}) {
-        const response = await fetch(`http://${this.address}:${this.port}${path}`, {
+        const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
+            ...this.fetchOptions,
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',

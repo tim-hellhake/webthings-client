@@ -8,9 +8,9 @@ const { WebThingsClient } = require('../lib/webthings-client');
 
 // Create a token at http://[your-gateway]/oauth/authorize?response_type=code&client_id=local-token&scope=/things:readwrite
 const token = '';
-const webThingsClient = new WebThingsClient('localhost', 8080, token);
 
 (async () => {
+    const webThingsClient = await WebThingsClient.local(token);
     const devices = await webThingsClient.getDevices();
 
     for (const device of devices) {
