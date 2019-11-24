@@ -19,11 +19,11 @@
   },
   "homepage": "https://github.com/tim-hellhake/webthings-client#readme",
   "devDependencies": {
-    "typescript": "^3.6.3",
-    "@types/node": "^12.7.11"
+    "typescript": "^3.7.2",
+    "@types/node": "^12.12.12"
   },
   "dependencies": {
     "node-fetch": "^2.6.0",
-    "@types/node-fetch": "^2.5.2"
+    "@types/node-fetch": "^2.5.4"
   }
 }
