@@ -82,6 +82,34 @@ export class WebThingsClient {
         return '';
     }
 
+    public async executeAction(device: Device, actionName: string, input: {} = {}) {
+        await this.post(this.getActionsHref(device), {[actionName]: {input: input}});
+    }
+
+    private getActionsHref(device: Device): string {
+        if (device.links) {
+            const actionsLinks = device.links.filter(link => link.rel === 'actions');
+
+            if (actionsLinks.length > 0) {
+                if (actionsLinks.length > 1) {
+                    console.warn('Multiple links to action found');
+                }
+
+                const link = actionsLinks[0];
+
+                if (link.href) {
+                    return link.href;
+                } else {
+                    console.warn('Actions link has no href')
+                }
+            } else {
+                console.warn('Device has no link to actions');
+            }
+        }
+
+        return '';
+    }
+
     private async get(path: String) {
         const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
             ...this.fetchOptions,
@@ -118,6 +146,31 @@ export class WebThingsClient {
         });
 
         if (response.status !== 200) {
+            throw `${response.status}: ${response.statusText}`;
+        }
+
+        const contentType = response.headers.get('Content-Type') || '';
+
+        if (contentType.indexOf('application/json') < 0) {
+            throw `Content-Type is '${response.headers.get('Content-Type')}' but expected 'application/json'`;
+        }
+
+        return await response.json();
+    }
+
+    private async post(path: String, value: {}) {
+        const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
+            ...this.fetchOptions,
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(value)
+        });
+
+        if (response.status < 200 || response.status >= 300) {
             throw `${response.status}: ${response.statusText}`;
         }
 
