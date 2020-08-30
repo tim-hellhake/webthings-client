@@ -9,4 +9,4 @@
 Access Web Things via the REST api.
 
 # How to use
-See `./examples/log-properties.js` for details.
+See `./examples` for details.
