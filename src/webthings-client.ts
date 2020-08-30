@@ -83,7 +83,7 @@ export class WebThingsClient {
     }
 
     public async executeAction(device: Device, actionName: string, input: {} = {}) {
-        await this.post(this.getActionsHref(device), {[actionName]: {input: input}});
+        await this.post(this.getActionsHref(device), { [actionName]: { input: input } });
     }
 
     private getActionsHref(device: Device): string {
