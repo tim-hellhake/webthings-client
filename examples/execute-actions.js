@@ -18,8 +18,9 @@ const token = '';
 
         for (const actionName in device.actions) {
             try {
+                const action = device.actions[actionName];
                 console.log(actionName);
-                await webThingsClient.executeAction(device, actionName);
+                await action.execute();
             } catch (err) {
                 console.error(err);
             }
