@@ -6,6 +6,7 @@
 
 import { Link } from "./link";
 import { Device } from "./device";
+import { EventLog, EventLogDescription } from "./eventlog";
 
 export interface EventDescription {
     title: string;
@@ -17,5 +18,33 @@ export interface EventDescription {
 
 export class Event {
     constructor(public name: string, public description: EventDescription, public device: Device) {
+    }
+    public async log(): Promise<EventLog[]> {
+        const raw = await this.device.client.get(this.href());
+        if (raw.length == 0) 
+            return [];
+        return raw.map((x: { [key: string]: EventLogDescription }) => new EventLog(Object.values(x)[0], this));
+    }
+    public href(): string {
+        if (this.description.links) {
+            const eventLinks = this.description.links.filter(link => link.rel === 'event');
+
+            if (eventLinks.length > 0) {
+                if (eventLinks.length > 1) {
+                    console.warn('Multiple links to event found');
+                }
+
+                const link = eventLinks[0];
+
+                if (link.href) {
+                    return link.href;
+                } else {
+                    throw Error('Event link has no href')
+                }
+            } else {
+                throw Error('Event has no link to event');
+            }
+        }
+        throw Error('Event has no links');
     }
 }

@@ -6,6 +6,8 @@
 
 import { Link } from "./link";
 import { Device } from "./device";
+import { Property } from "./property";
+import { ActionExecutor, ActionExecutorDescription } from "./actionexecutor";
 
 export interface ActionDescription {
     title: string;
@@ -14,35 +16,43 @@ export interface ActionDescription {
     description: string;
     readOnly: boolean;
     links: Link[];
+    input: { [key: string]: Property }
 }
 
 export class Action {
     constructor(public name: string, public description: ActionDescription, public device: Device) {
     }
-    public async execute(input = {}) {
-        await this.device.client.post(this.href(), { [this.name]: { input: input } });
+    public async execute(input = {}): Promise<ActionExecutor> {
+        const raw: { [key: string]: any } = await this.device.client.post(this.device.actionsHref(), { [this.name]: { input: input } });
+        return new ActionExecutor(Object.values(raw)[0], this);
+    }
+    public async queue(): Promise<ActionExecutor[]> {
+        const raw = await this.device.client.get(this.href());
+        if (raw.length == 0) 
+            return [];
+        return raw.map((x: { [key: string]: ActionExecutorDescription }) => new ActionExecutor(Object.values(x)[0], this));
     }
     public href(): string {
-        if (this.device.description.links) {
-            const actionsLinks = this.device.description.links.filter(link => link.rel === 'actions');
+        if (this.description.links) {
+            const actionLinks = this.description.links.filter(link => link.rel === 'action');
 
-            if (actionsLinks.length > 0) {
-                if (actionsLinks.length > 1) {
+            if (actionLinks.length > 0) {
+                if (actionLinks.length > 1) {
                     console.warn('Multiple links to action found');
                 }
 
-                const link = actionsLinks[0];
+                const link = actionLinks[0];
 
                 if (link.href) {
                     return link.href;
                 } else {
-                    throw Error('Actions link has no href')
+                    throw Error('Action link has no href')
                 }
             } else {
-                throw Error('Device has no link to actions');
+                throw Error('Action has no link to actions');
             }
         }
 
-        throw Error('Device has no links');
+        throw Error('Action has no links');
     }
 }

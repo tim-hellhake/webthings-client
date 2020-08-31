@@ -11,6 +11,8 @@ import { PropertyDescription, Property } from "./property";
 import { ActionDescription, Action } from "./action";
 import { EventDescription, Event } from "./event";
 import { Link } from "./link";
+import { EventLog, EventLogDescription } from "./eventlog";
+import { ActionExecutor, ActionExecutorDescription } from "./actionexecutor";
 
 export interface DeviceDescription {
     title: string;
@@ -50,6 +52,68 @@ export class Device extends EventEmitter {
     }
     public id(): string {
         return this.href().substr(this.href().lastIndexOf('/') + 1);
+    }
+    public actionsHref(): string {
+        if (this.description.links) {
+            const actionsLinks = this.description.links.filter(link => link.rel === 'actions');
+
+            if (actionsLinks.length > 0) {
+                if (actionsLinks.length > 1) {
+                    console.warn('Multiple links to action found');
+                }
+
+                const link = actionsLinks[0];
+
+                if (link.href) {
+                    return link.href;
+                } else {
+                    throw Error('Actions link has no href')
+                }
+            } else {
+                throw Error('Device has no link to actions');
+            }
+        }
+
+        throw Error('Device has no links');
+    }
+    public eventsHref(): string {
+        if (this.description.links) {
+            const eventsLinks = this.description.links.filter(link => link.rel === 'events');
+
+            if (eventsLinks.length > 0) {
+                if (eventsLinks.length > 1) {
+                    console.warn('Multiple links to event found');
+                }
+
+                const link = eventsLinks[0];
+
+                if (link.href) {
+                    return link.href;
+                } else {
+                    throw Error('Events link has no href')
+                }
+            } else {
+                throw Error('Device has no link to events');
+            }
+        }
+
+        throw Error('Device has no links');
+    }
+    public async eventLog(): Promise<{ [key: string]: EventLog }[]> {
+        const raw = await this.client.get(this.eventsHref());
+        return raw.map((x: { [key: string]: EventLogDescription }) => {
+            const key = Object.keys(x)[0];
+            const value = x[key];
+            return { [key]: new EventLog(value, this.events[key]) };
+        });
+    }
+    public async actionQueue(): Promise<{ [key: string]: ActionExecutor }[]> {
+        const raw = await this.client.get(this.actionsHref());
+        return raw.map((x: { [key: string]: ActionExecutorDescription }) => {
+            const key = Object.keys(x)[0];
+            const value = x[key];
+            return { [key]: new ActionExecutor(value, this.actions[key]) };
+        });
     }
     public async connect(port = 8080) {
         const href = this.href();
