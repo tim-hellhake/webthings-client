@@ -1,4 +1,6 @@
 import { WebThingsClient } from "./webthings-client";
+import { EventEmitter } from "events";
+import { client as WebSocketClient } from "websocket";
 import { IProperty, Property } from "./property";
 import { IAction, Action } from "./action";
 import { IEvent, Event } from "./event";
@@ -26,7 +28,7 @@ export interface IDevice {
     iconHref?: any;
 }
 
-export class Device {
+export class Device extends EventEmitter {
     private device : IDevice;
     private client_ : WebThingsClient;
     private properties_ : { [key: string]: Property } = {};
@@ -34,6 +36,7 @@ export class Device {
     private events_ : { [key: string]: Event } = {};
     public connection? : any;
     constructor(device: IDevice, client_: WebThingsClient) {
+        super();
         this.device = device;
         this.client_ = client_;
         for (const propertyName in device.properties) {
@@ -88,7 +91,75 @@ export class Device {
     public get client () {
         return this.client_;
     }
+    public get id () {
+        return this.href.substr(this.href.lastIndexOf('/')+1);
+    }
     public serialize() {
         return this.device;
+    }
+    public async connect() {
+        const href = this.href;
+        const thingUrl = `ws://localhost:8080${href}`;
+        const webSocketClient = new WebSocketClient();
+    
+        webSocketClient.on('connectFailed', (error: any) => {
+          this.emit('connectFailed', error);
+        });
+    
+        await new Promise((resolve) => {
+            webSocketClient.on('connect', async (connection: any) => {
+                connection.on('error', (error: any) => {
+                    this.emit('error', error);
+                });
+          
+                connection.on('close', () => {
+                    this.emit('close');
+                });
+          
+                connection.on('message', (message: any) => {
+                    // console.log('gateway message', message);
+                    if (message.type === 'utf8' && message.utf8Data) {
+                        const msg = JSON.parse(message.utf8Data);
+                        this.emit('message', msg.data);
+                        if (msg.id && msg.data) {
+                            switch (msg.messageType) {
+                                case 'propertyStatus':
+                                    for (const key in msg.data)
+                                        this.emit('propertyChanged', this.properties[key], msg.data[key]);
+                                    break;
+                                case 'actionStatus':
+                                    for (const key in msg.data)
+                                        this.emit('actionTriggered', this.actions[key], msg.data[key]);
+                                    break;
+                                case 'event':
+                                    for (const key in msg.data)
+                                        this.emit('eventRaised', this.events[key], msg.data[key]);
+                                    break;
+                                case 'connected':
+                                    this.emit('connectStateChanged', msg.data);
+                                    break;
+                                default:
+                                    console.warn('Unknown message from device', this.id, ':', msg.messageType, '(', msg.data, ')');
+                            }
+                        }
+                    }
+                });
+
+                this.connection = connection;
+                resolve();
+            });
+    
+            webSocketClient.connect(`${thingUrl}?jwt=${this.client.token}`);
+        });
+    }
+    public async subscribeEvents(events: {[key: string]: Event}) {
+        if (!this.connection) {
+            throw Error('Device not connected!');
+        }
+        const ievents: {[key: string]: IEvent} = {};
+        for (const eventName in events) {
+            ievents[eventName] = events[eventName].serialize();
+        }
+        await this.connection.send(JSON.stringify({messageType: 'addEventSubscription', data: ievents}));
     }
 }
