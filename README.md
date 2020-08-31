@@ -1,6 +1,6 @@
 # Web Things client
 
-[![Build Status](https://travis-ci.org/tim-hellhake/webthings-client.svg?branch=master)](https://travis-ci.org/tim-hellhake/webthings-client)
+[![Build Status](https://github.com/tim-hellhake/webthings-client/workflows/Build/badge.svg)](https://github.com/tim-hellhake/webthings-client/actions?query=workflow%3ABuild)
 [![dependencies](https://david-dm.org/tim-hellhake/webthings-client.svg)](https://david-dm.org/tim-hellhake/webthings-client)
 [![devDependencies](https://david-dm.org/tim-hellhake/webthings-client/dev-status.svg)](https://david-dm.org/tim-hellhake/webthings-client?type=dev)
 [![optionalDependencies](https://david-dm.org/tim-hellhake/webthings-client/optional-status.svg)](https://david-dm.org/tim-hellhake/webthings-client?type=optional)
@@ -9,4 +9,4 @@
 Access Web Things via the REST api.
 
 # How to use
-See `./examples/log-properties.js` for details.
+See `./examples` for details.
