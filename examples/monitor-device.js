@@ -7,7 +7,7 @@
 const { WebThingsClient } = require('../lib/webthings-client');
 
 // Create a token at http://[your-gateway]/oauth/authorize?response_type=code&client_id=local-token&scope=/things:readwrite
-const token = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjA1ZDUyNTRjLTY1NGMtNGJkYy1hNmZhLTk4YTJjYzkxOTdmNSJ9.eyJyb2xlIjoidXNlcl90b2tlbiIsImlhdCI6MTU5MTM2NDkzMiwiaXNzIjoiaHR0cHM6Ly9teXBlcnNvbmFscmVjeWNsZWJpbi5tb3ppbGxhLWlvdC5vcmcifQ.RmqDrcQESSHyIRa9K2ZuZ5GIBuc-q88XlzLPajI-iUVv6R-3Amb3_AQ8-g6Bp5Iw9fJsiUPGqSxsjg9TGXFGsw';
+const token = '';
 
 (async () => {
     const webThingsClient = await WebThingsClient.local(token);
