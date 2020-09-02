@@ -29,76 +29,30 @@ export interface DeviceDescription {
 }
 
 export class Device extends EventEmitter {
-    private device : DeviceDescription;
-    private client_ : WebThingsClient;
-    private properties_ : { [key: string]: Property } = {};
-    private actions_ : { [key: string]: Action } = {};
-    private events_ : { [key: string]: Event } = {};
+    public properties : { [key: string]: Property } = {};
+    public actions : { [key: string]: Action } = {};
+    public events : { [key: string]: Event } = {};
     public connection? : any;
-    constructor(device: DeviceDescription, client_: WebThingsClient) {
+    constructor(public description: DeviceDescription, public client: WebThingsClient) {
         super();
-        this.device = device;
-        this.client_ = client_;
-        for (const propertyName in device.properties) {
-            this.properties_[propertyName] = new Property(propertyName, device.properties[propertyName], this);
+        for (const propertyName in description.properties) {
+            this.properties[propertyName] = new Property(propertyName, description.properties[propertyName], this);
         }
-        for (const actionName in device.actions) {
-            this.actions_[actionName] = new Action(actionName, device.actions[actionName], this);
+        for (const actionName in description.actions) {
+            this.actions[actionName] = new Action(actionName, description.actions[actionName], this);
         }
-        for (const eventName in device.events) {
-            this.events_[eventName] = new Event(eventName, device.events[eventName], this);
+        for (const eventName in description.events) {
+            this.events[eventName] = new Event(eventName, description.events[eventName], this);
         }
     }
-    public get title () {
-        return this.device.title;
+    public href(): string {
+        return this.description.href;
     }
-    public get type () {
-        return this.device.type;
-    }
-    public get '@context' () {
-        return this.device['@context'];
-    }
-    public get '@type' () {
-        return this.device['@type'];
-    }
-    public get description () {
-        return this.device.description;
-    }
-    public get href () {
-        return this.device.href;
-    }
-    public get properties () {
-        return this.properties_;
-    }
-    public get actions () {
-        return this.actions_;
-    }
-    public get events () {
-        return this.events_;
-    }
-    public get links () {
-        return this.device.links;
-    }
-    public get layoutIndex () {
-        return this.device.layoutIndex;
-    }
-    public get selectedCapability () {
-        return this.device.selectedCapability;
-    }
-    public get iconHref () {
-        return this.device.iconHref;
-    }
-    public get client () {
-        return this.client_;
-    }
-    public get id () {
-        return this.href.substr(this.href.lastIndexOf('/')+1);
-    }
-    public serialize() {
-        return this.device;
+    public id(): string {
+        return this.href().substr(this.href().lastIndexOf('/')+1);
     }
     public async connect(port = 8080) {
-        const href = this.href;
+        const href = this.href();
         const thingUrl = `ws://localhost:${port}${href}`;
         const webSocketClient = new WebSocketClient();
     
@@ -169,7 +123,7 @@ export class Device extends EventEmitter {
         }
         const eventdescs: {[key: string]: EventDescription} = {};
         for (const eventName in events) {
-            eventdescs[eventName] = events[eventName].serialize();
+            eventdescs[eventName] = events[eventName].description;
         }
         await this.connection.send(JSON.stringify({messageType: 'addEventSubscription', data: eventdescs}));
     }

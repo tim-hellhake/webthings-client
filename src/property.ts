@@ -20,55 +20,10 @@ export interface PropertyDescription {
     links: Link[];
 }
 
-export class Property{
-    private name_ : string;
-    private property : PropertyDescription;
-    private device_ : Device;
-    constructor(name_: string, property: PropertyDescription, device_: Device) {
-        this.name_ = name_;
-        this.property = property;
-        this.device_ = device_;
+export class Property {
+    constructor(public name: string, public description: PropertyDescription, public device: Device) {
     }
-    public get title() {
-        return this.property.title;
-    }
-    public get type() {
-        return this.property.type;
-    }
-    public get '@type'() {
-        return this.property['@type'];
-    }
-    public get unit() {
-        return this.property.unit;
-    }
-    public get description() {
-        return this.property.description;
-    }
-    public get minimum() {
-        return this.property.minimum;
-    }
-    public get maximum() {
-        return this.property.maximum;
-    }
-    public get readOnly() {
-        return this.property.readOnly;
-    }
-    public get multipleOf() {
-        return this.property.multipleOf;
-    }
-    public get links() {
-        return this.property.links;
-    }
-    public get name() {
-        return this.name_;
-    }
-    public get device () {
-        return this.device_;
-    } 
-    public serialize() {
-        return this.property;
-    }
-    public async getValue() {
+    public async getValue(): Promise<any> {
         const wrapper = await this.device.client.get(this.href());
         return wrapper[this.name];
     }
@@ -76,9 +31,9 @@ export class Property{
         const wrapper = { [this.name]: value };
         return this.device.client.put(this.href(), wrapper);
     }
-    private href() {
-        if (this.links) {
-            const propertyLinks = this.links.filter(link => link.rel === 'property');
+    public href(): string {
+        if (this.description.links) {
+            const propertyLinks = this.description.links.filter(link => link.rel === 'property');
 
             if (propertyLinks.length > 0) {
                 if (propertyLinks.length > 1) {

@@ -15,30 +15,30 @@ const token = '';
 
     for (const device of devices) {
         device.on('connectFailed', () => {
-            console.log(device.title, ':', 'Failed to connect');
+            console.log(device.id(), ':', 'Failed to connect');
         });
         device.on('error', (error) => {
-            console.log(device.title, ':', 'Something went wrong', error);
+            console.log(device.id(), ':', 'Something went wrong', error);
         });
         device.on('close', () => {
-            console.log(device.title, ':', 'Connection closed');
+            console.log(device.id(), ':', 'Connection closed');
         });
         device.on('propertyChanged', (property, value) => {
-            console.log(device.title, ':', `Property ${property.name} changed to ${value}`);
+            console.log(device.id(), ':', `Property ${property.name} changed to ${value}`);
         });
         device.on('actionTriggered', (action, info) => {
-            console.log(device.title, ':', `Action ${action.name} triggered with input ${JSON.stringify(info.input)}`);
+            console.log(device.id(), ':', `Action ${action.name} triggered with input ${JSON.stringify(info.input)}`);
         });
-        device.on('eventRaised', (action, info) => {
-            console.log(device.title, ':', `Event ${action.name} raised: ${info.data}`);
+        device.on('eventRaised', (event, info) => {
+            console.log(device.id(), ':', `Event ${event.name} raised: ${info.data}`);
         });
         device.on('connectStateChanged', (state) => {
-            console.log(device.title, ':', device.id, state ? 'connected' : 'disconnected');
+            console.log(device.id(), ':', state ? 'connected' : 'disconnected');
         });
         device.connect().then(() => {
             setTimeout(async () => {
                 await device.subscribeEvents(device.events);
-                console.log(device.title, ':', 'Subscribed to all events');
+                console.log(device.id(), ':', 'Subscribed to all events');
             }, 100);
         });
     }

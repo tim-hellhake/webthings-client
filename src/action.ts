@@ -17,47 +17,14 @@ export interface ActionDescription {
 }
 
 export class Action {
-    private name_ : string;
-    private action : ActionDescription;
-    private device_ : Device;
-    constructor(name_: string, action: ActionDescription, device_: Device) {
-        this.name_ = name_;
-        this.action = action;
-        this.device_ = device_;
-    }
-    public get title() {
-        return this.action.title;
-    }
-    public get type() {
-        return this.action.type;
-    }
-    public get '@type'() {
-        return this.action['@type'];
-    }
-    public get description() {
-        return this.action.description;
-    }
-    public get readOnly() {
-        return this.action.readOnly;
-    }
-    public get links() {
-        return this.action.links;
-    }
-    public get name() {
-        return this.name_;
-    }
-    public get device() {
-        return this.device_;
-    }
-    public serialize() {
-        return this.action;
+    constructor(public name: string, public description: ActionDescription, public device: Device) {
     }
     public async execute(input = {}) {
         await this.device.client.post(this.href(), {[this.name]: {input: input}});
     }
-    private href(): string {
-        if (this.device.links) {
-            const actionsLinks = this.device.links.filter(link => link.rel === 'actions');
+    public href(): string {
+        if (this.device.description.links) {
+            const actionsLinks = this.device.description.links.filter(link => link.rel === 'actions');
 
             if (actionsLinks.length > 0) {
                 if (actionsLinks.length > 1) {
