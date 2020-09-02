@@ -97,9 +97,9 @@ export class Device extends EventEmitter {
     public serialize() {
         return this.device;
     }
-    public async connect() {
+    public async connect(port = 8080) {
         const href = this.href;
-        const thingUrl = `ws://localhost:8080${href}`;
+        const thingUrl = `ws://localhost:${port}${href}`;
         const webSocketClient = new WebSocketClient();
     
         webSocketClient.on('connectFailed', (error: any) => {
