@@ -53,9 +53,9 @@ export class Action {
         return this.action;
     }
     public async execute(input = {}) {
-        await this.device.client.post(this.actionHref, {[this.name]: {input: input}});
+        await this.device.client.post(this.href(), {[this.name]: {input: input}});
     }
-    private get actionHref(): string {
+    private href(): string {
         if (this.device.links) {
             const actionsLinks = this.device.links.filter(link => link.rel === 'actions');
 

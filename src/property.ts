@@ -69,14 +69,14 @@ export class Property{
         return this.property;
     }
     public async getValue() {
-        const wrapper = await this.device.client.get(this.href);
+        const wrapper = await this.device.client.get(this.href());
         return wrapper[this.name];
     }
     public async setValue(value: any) {
         const wrapper = { [this.name]: value };
-        return this.device.client.put(this.href, wrapper);
+        return this.device.client.put(this.href(), wrapper);
     }
-    private get href() {
+    private href() {
         if (this.links) {
             const propertyLinks = this.links.filter(link => link.rel === 'property');
 
