@@ -123,16 +123,28 @@ export class Device extends EventEmitter {
                         if (msg.id && msg.data) {
                             switch (msg.messageType) {
                                 case 'propertyStatus':
-                                    for (const key in msg.data)
-                                        this.emit('propertyChanged', this.properties[key], msg.data[key]);
+                                    for (const key in msg.data) {
+                                        const property = this.properties[key];
+                                        if (!property)
+                                            throw Error(`Unknown property ${key}`);
+                                        this.emit('propertyChanged', property, msg.data[key]);
+                                    }
                                     break;
                                 case 'actionStatus':
-                                    for (const key in msg.data)
-                                        this.emit('actionTriggered', this.actions[key], msg.data[key]);
+                                    for (const key in msg.data) {
+                                        const action = this.actions[key];
+                                        if (!action)
+                                            throw Error(`Unknown action ${key}`);
+                                        this.emit('actionTriggered', action, msg.data[key]);
+                                    }
                                     break;
                                 case 'event':
-                                    for (const key in msg.data)
-                                        this.emit('eventRaised', this.events[key], msg.data[key]);
+                                    for (const key in msg.data) {
+                                        const event = this.events[key];
+                                        if (!event)
+                                            throw Error(`Unknown event ${key}`);
+                                        this.emit('eventRaised', event, msg.data[key]);
+                                    }
                                     break;
                                 case 'connected':
                                     this.emit('connectStateChanged', msg.data);
