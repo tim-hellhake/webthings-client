@@ -7,7 +7,7 @@ import { Device } from "./device";
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export interface IProperty {
+export interface PropertyDescription {
     title: string;
     type: string;
     '@type': string[];
@@ -22,9 +22,9 @@ export interface IProperty {
 
 export class Property{
     private name_ : string;
-    private property : IProperty;
+    private property : PropertyDescription;
     private device_ : Device;
-    constructor(name_: string, property: IProperty, device_: Device) {
+    constructor(name_: string, property: PropertyDescription, device_: Device) {
         this.name_ = name_;
         this.property = property;
         this.device_ = device_;

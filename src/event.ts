@@ -7,7 +7,7 @@ import { Device } from "./device";
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export interface IEvent {
+export interface EventDescription {
     title: string;
     description: string;
     type: string;
@@ -17,9 +17,9 @@ export interface IEvent {
 
 export class Event {
     private name_ : string;
-    private event : IEvent;
+    private event : EventDescription;
     private device_ : Device;
-    constructor(name_: string, event: IEvent, device_: Device) {
+    constructor(name_: string, event: EventDescription, device_: Device) {
         this.name_ = name_;
         this.event = event;
         this.device_ = device_;

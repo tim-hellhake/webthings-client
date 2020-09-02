@@ -5,7 +5,7 @@
  */
 
 import fetch, { RequestInit } from 'node-fetch';
-import { Device, IDevice } from './device';
+import { Device, DeviceDescription } from './device';
 import { Agent } from 'https';
 
 export class WebThingsClient {
@@ -45,7 +45,7 @@ export class WebThingsClient {
     }
 
     public async getDevices(): Promise<Device[]> {
-        const idevices: IDevice[] = await this.get('/things');
+        const idevices: DeviceDescription[] = await this.get('/things');
         const devices = [];
         for (const device of idevices) {
             devices.push(new Device(device, this));

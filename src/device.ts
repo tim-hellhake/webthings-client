@@ -1,9 +1,9 @@
 import { WebThingsClient } from "./webthings-client";
 import { EventEmitter } from "events";
 import { client as WebSocketClient } from "websocket";
-import { IProperty, Property } from "./property";
-import { IAction, Action } from "./action";
-import { IEvent, Event } from "./event";
+import { PropertyDescription, Property } from "./property";
+import { ActionDescription, Action } from "./action";
+import { EventDescription, Event } from "./event";
 import { Link } from "./link";
 
 /**
@@ -12,16 +12,16 @@ import { Link } from "./link";
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export interface IDevice {
+export interface DeviceDescription {
     title: string;
     type: string;
     '@context': string;
     '@type': string[];
     description: string;
     href: string;
-    properties: { [key: string]: IProperty };
-    actions: { [key: string]: IAction };
-    events: { [key: string]: IEvent };
+    properties: { [key: string]: PropertyDescription };
+    actions: { [key: string]: ActionDescription };
+    events: { [key: string]: EventDescription };
     links: Link[];
     layoutIndex: number;
     selectedCapability: string;
@@ -29,13 +29,13 @@ export interface IDevice {
 }
 
 export class Device extends EventEmitter {
-    private device : IDevice;
+    private device : DeviceDescription;
     private client_ : WebThingsClient;
     private properties_ : { [key: string]: Property } = {};
     private actions_ : { [key: string]: Action } = {};
     private events_ : { [key: string]: Event } = {};
     public connection? : any;
-    constructor(device: IDevice, client_: WebThingsClient) {
+    constructor(device: DeviceDescription, client_: WebThingsClient) {
         super();
         this.device = device;
         this.client_ = client_;
@@ -156,10 +156,10 @@ export class Device extends EventEmitter {
         if (!this.connection) {
             throw Error('Device not connected!');
         }
-        const ievents: {[key: string]: IEvent} = {};
+        const eventdescs: {[key: string]: EventDescription} = {};
         for (const eventName in events) {
-            ievents[eventName] = events[eventName].serialize();
+            eventdescs[eventName] = events[eventName].serialize();
         }
-        await this.connection.send(JSON.stringify({messageType: 'addEventSubscription', data: ievents}));
+        await this.connection.send(JSON.stringify({messageType: 'addEventSubscription', data: eventdescs}));
     }
 }

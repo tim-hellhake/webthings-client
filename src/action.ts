@@ -7,7 +7,7 @@ import { Device } from "./device";
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export interface IAction {
+export interface ActionDescription {
     title: string;
     type: string;
     '@type': string;
@@ -18,9 +18,9 @@ export interface IAction {
 
 export class Action {
     private name_ : string;
-    private action : IAction;
+    private action : ActionDescription;
     private device_ : Device;
-    constructor(name_: string, action: IAction, device_: Device) {
+    constructor(name_: string, action: ActionDescription, device_: Device) {
         this.name_ = name_;
         this.action = action;
         this.device_ = device_;
