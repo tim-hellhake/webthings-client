@@ -117,7 +117,6 @@ export class Device extends EventEmitter {
                 });
           
                 connection.on('message', (message: any) => {
-                    // console.log('gateway message', message);
                     if (message.type === 'utf8' && message.utf8Data) {
                         const msg = JSON.parse(message.utf8Data);
                         this.emit('message', msg.data);
