@@ -1,11 +1,11 @@
-import { Link } from "./link";
-import { Device } from "./device";
-
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
+
+import { Link } from "./link";
+import { Device } from "./device";
 
 export interface ActionDescription {
     title: string;
@@ -20,7 +20,7 @@ export class Action {
     constructor(public name: string, public description: ActionDescription, public device: Device) {
     }
     public async execute(input = {}) {
-        await this.device.client.post(this.href(), {[this.name]: {input: input}});
+        await this.device.client.post(this.href(), { [this.name]: { input: input } });
     }
     public href(): string {
         if (this.device.description.links) {
