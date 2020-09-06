@@ -5,7 +5,7 @@
  */
 
 import fetch, { RequestInit } from 'node-fetch';
-import { Device, Property } from './device';
+import { Device, DeviceDescription } from './device';
 import { Agent } from 'https';
 
 export class WebThingsClient {
@@ -32,7 +32,7 @@ export class WebThingsClient {
     private protocol: string;
     private fetchOptions: RequestInit = {};
 
-    constructor(private address: string, private port: number, private token: string, useHttps = false, skipValidation = false) {
+    constructor(private address: string, private port: number, public token: string, useHttps = false, skipValidation = false) {
         this.protocol = useHttps ? 'https' : 'http';
 
         if (skipValidation) {
@@ -44,73 +44,16 @@ export class WebThingsClient {
         }
     }
 
-    public getDevices(): Promise<Device[]> {
-        return this.get('/things');
-    }
-
-    public async getProperty(property: Property, propertyName: string) {
-        const wrapper = await this.get(this.getPropertyHref(property));
-        return wrapper[propertyName];
-    }
-
-    public setProperty(property: Property, propertyName: string, value: any) {
-        const wrapper = { [propertyName]: value };
-        return this.put(this.getPropertyHref(property), wrapper);
-    }
-
-    private getPropertyHref(property: Property): string {
-        if (property.links) {
-            const propertyLinks = property.links.filter(link => link.rel === 'property');
-
-            if (propertyLinks.length > 0) {
-                if (propertyLinks.length > 1) {
-                    console.warn('Multiple links to property found');
-                }
-
-                const link = propertyLinks[0];
-
-                if (link.href) {
-                    return link.href;
-                } else {
-                    console.warn('Property link has no href')
-                }
-            } else {
-                console.warn('Property has no link to property');
-            }
+    public async getDevices(): Promise<Device[]> {
+        const idevices: DeviceDescription[] = await this.get('/things');
+        const devices = [];
+        for (const device of idevices) {
+            devices.push(new Device(device, this));
         }
-
-        return '';
+        return devices;
     }
 
-    public async executeAction(device: Device, actionName: string, input: {} = {}) {
-        await this.post(this.getActionsHref(device), { [actionName]: { input: input } });
-    }
-
-    private getActionsHref(device: Device): string {
-        if (device.links) {
-            const actionsLinks = device.links.filter(link => link.rel === 'actions');
-
-            if (actionsLinks.length > 0) {
-                if (actionsLinks.length > 1) {
-                    console.warn('Multiple links to action found');
-                }
-
-                const link = actionsLinks[0];
-
-                if (link.href) {
-                    return link.href;
-                } else {
-                    console.warn('Actions link has no href')
-                }
-            } else {
-                console.warn('Device has no link to actions');
-            }
-        }
-
-        return '';
-    }
-
-    private async get(path: String) {
+    public async get(path: String) {
         const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
             ...this.fetchOptions,
             method: 'GET',
@@ -133,7 +76,7 @@ export class WebThingsClient {
         return await response.json();
     }
 
-    private async put(path: String, value: {}) {
+    public async put(path: String, value: {}) {
         const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
             ...this.fetchOptions,
             method: 'PUT',
@@ -158,7 +101,7 @@ export class WebThingsClient {
         return await response.json();
     }
 
-    private async post(path: String, value: {}) {
+    public async post(path: String, value: {}) {
         const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
             ...this.fetchOptions,
             method: 'POST',

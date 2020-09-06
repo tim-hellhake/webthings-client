@@ -14,12 +14,12 @@ const token = '';
     const devices = await webThingsClient.getDevices();
 
     for (const device of devices) {
-        console.log(`---${device.title}---`);
+        console.log(`---${device.description.title}---`);
 
         for (const propertyName in device.properties) {
             try {
                 const property = device.properties[propertyName];
-                const value = await webThingsClient.getProperty(property, propertyName);
+                const value = await property.getValue();
                 console.log(`${propertyName}: ${value}`);
             } catch (err) {
                 console.error(err);
