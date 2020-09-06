@@ -45,12 +45,8 @@ export class WebThingsClient {
     }
 
     public async getDevices(): Promise<Device[]> {
-        const idevices: DeviceDescription[] = await this.get('/things');
-        const devices = [];
-        for (const device of idevices) {
-            devices.push(new Device(device, this));
-        }
-        return devices;
+        const descriptions: DeviceDescription[] = await this.get('/things');
+        return descriptions.map(description => new Device(description, this));
     }
 
     public async get(path: String) {
