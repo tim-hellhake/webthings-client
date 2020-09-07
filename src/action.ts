@@ -8,6 +8,7 @@ import { Link } from "./link";
 import { Device } from "./device";
 import { Property } from "./property";
 import { ActionInstance, ActionInstanceDescription } from "./action-instance";
+import { hrefFromLinksArray } from "./helpers";
 
 export interface ActionDescription {
     title: string;
@@ -31,26 +32,6 @@ export class Action {
         return raw.map(x => new ActionInstance(Object.values(x)[0], this));
     }
     public href(): string {
-        if (this.description.links) {
-            const actionLinks = this.description.links.filter(link => link.rel === 'action');
-
-            if (actionLinks.length > 0) {
-                if (actionLinks.length > 1) {
-                    console.warn('Multiple links to action found');
-                }
-
-                const link = actionLinks[0];
-
-                if (link.href) {
-                    return link.href;
-                } else {
-                    throw Error('Action link has no href')
-                }
-            } else {
-                throw Error('Action has no link to actions');
-            }
-        }
-
-        throw Error('Action has no links');
+        return hrefFromLinksArray(this.description.links, 'action');
     }
 }
