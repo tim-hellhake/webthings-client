@@ -49,65 +49,24 @@ export class WebThingsClient {
         return descriptions.map(description => new Device(description, this));
     }
 
-    public async get(path: String) {
-        const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
+    private async request(method: string, path: string, body: any, args: { [key: string]: any } = {}) {
+        const headers: { [key: string]: string } = {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${this.token}`,
+        };
+        const params = {
             ...this.fetchOptions,
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${this.token}`,
-            }
-        });
-
-        if (response.status !== 200) {
-            throw `${response.status}: ${response.statusText}`;
+            method: method,
+            headers: headers
         }
-
-        const contentType = response.headers.get('Content-Type') || '';
-
-        if (contentType.indexOf('application/json') < 0) {
-            throw `Content-Type is '${response.headers.get('Content-Type')}' but expected 'application/json'`;
+        if (!args.nobody) {
+            headers['Content-Type'] = 'application/json';
+            if (args.strbody)
+                params.body = body;
+            else
+                params.body = JSON.stringify(body);
         }
-
-        return await response.json();
-    }
-
-    public async put(path: String, value: {}) {
-        const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
-            ...this.fetchOptions,
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${this.token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(value)
-        });
-
-        if (response.status !== 200) {
-            throw `${response.status}: ${response.statusText}`;
-        }
-
-        const contentType = response.headers.get('Content-Type') || '';
-
-        if (contentType.indexOf('application/json') < 0) {
-            throw `Content-Type is '${response.headers.get('Content-Type')}' but expected 'application/json'`;
-        }
-
-        return await response.json();
-    }
-
-    public async post(path: String, value: {}) {
-        const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, {
-            ...this.fetchOptions,
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${this.token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(value)
-        });
+        const response = await fetch(`${this.protocol}://${this.address}:${this.port}${path}`, params);
 
         if (response.status < 200 || response.status >= 300) {
             throw `${response.status}: ${response.statusText}`;
@@ -116,9 +75,28 @@ export class WebThingsClient {
         const contentType = response.headers.get('Content-Type') || '';
 
         if (contentType.indexOf('application/json') < 0) {
-            throw `Content-Type is '${response.headers.get('Content-Type')}' but expected 'application/json'`;
+            if (args.expectnocontent)
+                return null;
+            else
+                throw `Content-Type is '${response.headers.get('Content-Type')}' but expected 'application/json'`;
         }
 
         return await response.json();
+    }
+
+    public async get(path: string) {
+        return this.request('GET', path, null, { nobody: true });
+    }
+
+    public async put(path: string, value: any =  null) {
+        return this.request('PUT', path, value);
+    }
+
+    public async post(path: string, value: any =  null) {
+        return this.request('POST', path, value);
+    }
+
+    public async delete(path: string) {
+        this.request('DELETE', path, '', { strbody: true, expectnocontent: true });
     }
 }
