@@ -88,11 +88,11 @@ export class WebThingsClient {
         return this.request('GET', path, null, { nobody: true });
     }
 
-    public async put(path: string, value: any =  null) {
+    public async put(path: string, value: any = null) {
         return this.request('PUT', path, value);
     }
 
-    public async post(path: string, value: any =  null) {
+    public async post(path: string, value: any = null) {
         return this.request('POST', path, value);
     }
 
