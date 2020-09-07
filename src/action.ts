@@ -27,10 +27,8 @@ export class Action {
         return new ActionInstance(Object.values(raw)[0], this);
     }
     public async queue(): Promise<ActionInstance[]> {
-        const raw = await this.device.client.get(this.href());
-        if (raw.length == 0) 
-            return [];
-        return raw.map((x: { [key: string]: ActionInstanceDescription }) => new ActionInstance(Object.values(x)[0], this));
+        const raw: { [key: string]: ActionInstanceDescription }[] = await this.device.client.get(this.href());
+        return raw.map(x => new ActionInstance(Object.values(x)[0], this));
     }
     public href(): string {
         if (this.description.links) {

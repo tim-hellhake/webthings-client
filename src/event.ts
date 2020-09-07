@@ -20,10 +20,8 @@ export class Event {
     constructor(public name: string, public description: EventDescription, public device: Device) {
     }
     public async log(): Promise<EventInstance[]> {
-        const raw = await this.device.client.get(this.href());
-        if (raw.length == 0) 
-            return [];
-        return raw.map((x: { [key: string]: EventInstanceDescription }) => new EventInstance(Object.values(x)[0], this));
+        const raw: { [key: string]: EventInstanceDescription }[] = await this.device.client.get(this.href());
+        return raw.map(x => new EventInstance(Object.values(x)[0], this));
     }
     public href(): string {
         if (this.description.links) {

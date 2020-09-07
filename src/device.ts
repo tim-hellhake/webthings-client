@@ -100,16 +100,16 @@ export class Device extends EventEmitter {
         throw Error('Device has no links');
     }
     public async eventLog(): Promise<{ [key: string]: EventInstance }[]> {
-        const raw = await this.client.get(this.eventsHref());
-        return raw.map((x: { [key: string]: EventInstanceDescription }) => {
+        const raw: { [key: string]: EventInstanceDescription }[] = await this.client.get(this.eventsHref());
+        return raw.map(x => {
             const key = Object.keys(x)[0];
             const value = x[key];
             return { [key]: new EventInstance(value, this.events[key]) };
         });
     }
     public async actionQueue(): Promise<{ [key: string]: ActionInstance }[]> {
-        const raw = await this.client.get(this.actionsHref());
-        return raw.map((x: { [key: string]: ActionInstanceDescription }) => {
+        const raw: { [key: string]: ActionInstanceDescription }[] = await this.client.get(this.actionsHref());
+        return raw.map(x => {
             const key = Object.keys(x)[0];
             const value = x[key];
             return { [key]: new ActionInstance(value, this.actions[key]) };
