@@ -13,6 +13,7 @@ import { EventDescription, Event } from "./event";
 import { Link } from "./link";
 import { EventInstance, EventInstanceDescription } from "./event-instance";
 import { ActionInstance, ActionInstanceDescription } from "./action-instance";
+import { hrefFromLinksArray } from "./helpers";
 
 export interface DeviceDescription {
     title: string;
@@ -54,50 +55,10 @@ export class Device extends EventEmitter {
         return this.href().substr(this.href().lastIndexOf('/') + 1);
     }
     public actionsHref(): string {
-        if (this.description.links) {
-            const actionsLinks = this.description.links.filter(link => link.rel === 'actions');
-
-            if (actionsLinks.length > 0) {
-                if (actionsLinks.length > 1) {
-                    console.warn('Multiple links to action found');
-                }
-
-                const link = actionsLinks[0];
-
-                if (link.href) {
-                    return link.href;
-                } else {
-                    throw Error('Actions link has no href')
-                }
-            } else {
-                throw Error('Device has no link to actions');
-            }
-        }
-
-        throw Error('Device has no links');
+        return hrefFromLinksArray(this.description.links, 'actions');
     }
     public eventsHref(): string {
-        if (this.description.links) {
-            const eventsLinks = this.description.links.filter(link => link.rel === 'events');
-
-            if (eventsLinks.length > 0) {
-                if (eventsLinks.length > 1) {
-                    console.warn('Multiple links to event found');
-                }
-
-                const link = eventsLinks[0];
-
-                if (link.href) {
-                    return link.href;
-                } else {
-                    throw Error('Events link has no href')
-                }
-            } else {
-                throw Error('Device has no link to events');
-            }
-        }
-
-        throw Error('Device has no links');
+        return hrefFromLinksArray(this.description.links, 'events');
     }
     public async eventLog(): Promise<{ [key: string]: EventInstance }[]> {
         const raw: { [key: string]: EventInstanceDescription }[] = await this.client.get(this.eventsHref());

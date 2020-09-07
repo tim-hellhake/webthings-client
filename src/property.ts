@@ -6,6 +6,7 @@
 
 import { Link } from "./link";
 import { Device } from "./device";
+import { hrefFromLinksArray } from "./helpers";
 
 export interface PropertyDescription {
     title: string;
@@ -32,25 +33,6 @@ export class Property {
         return this.device.client.put(this.href(), wrapper);
     }
     public href(): string {
-        if (this.description.links) {
-            const propertyLinks = this.description.links.filter(link => link.rel === 'property');
-
-            if (propertyLinks.length > 0) {
-                if (propertyLinks.length > 1) {
-                    console.warn('Multiple links to property found');
-                }
-
-                const link = propertyLinks[0];
-
-                if (link.href) {
-                    return link.href;
-                } else {
-                    throw Error('Property link has no href')
-                }
-            } else {
-                throw Error('Property has no link to property');
-            }
-        }
-        throw Error('Property has no links');
+        return hrefFromLinksArray(this.description.links, 'property');
     }
 }
