@@ -6,7 +6,7 @@
 
 import { Link } from "./link";
 import { Device } from "./device";
-import { EventLog, EventLogDescription } from "./eventlog";
+import { EventInstance, EventInstanceDescription } from "./event-instance";
 
 export interface EventDescription {
     title: string;
@@ -19,11 +19,11 @@ export interface EventDescription {
 export class Event {
     constructor(public name: string, public description: EventDescription, public device: Device) {
     }
-    public async log(): Promise<EventLog[]> {
+    public async log(): Promise<EventInstance[]> {
         const raw = await this.device.client.get(this.href());
         if (raw.length == 0) 
             return [];
-        return raw.map((x: { [key: string]: EventLogDescription }) => new EventLog(Object.values(x)[0], this));
+        return raw.map((x: { [key: string]: EventInstanceDescription }) => new EventInstance(Object.values(x)[0], this));
     }
     public href(): string {
         if (this.description.links) {

@@ -7,7 +7,7 @@
 import { Link } from "./link";
 import { Device } from "./device";
 import { Property } from "./property";
-import { ActionExecutor, ActionExecutorDescription } from "./actionexecutor";
+import { ActionInstance, ActionInstanceDescription } from "./action-instance";
 
 export interface ActionDescription {
     title: string;
@@ -22,15 +22,15 @@ export interface ActionDescription {
 export class Action {
     constructor(public name: string, public description: ActionDescription, public device: Device) {
     }
-    public async execute(input = {}): Promise<ActionExecutor> {
+    public async execute(input = {}): Promise<ActionInstance> {
         const raw: { [key: string]: any } = await this.device.client.post(this.device.actionsHref(), { [this.name]: { input: input } });
-        return new ActionExecutor(Object.values(raw)[0], this);
+        return new ActionInstance(Object.values(raw)[0], this);
     }
-    public async queue(): Promise<ActionExecutor[]> {
+    public async queue(): Promise<ActionInstance[]> {
         const raw = await this.device.client.get(this.href());
         if (raw.length == 0) 
             return [];
-        return raw.map((x: { [key: string]: ActionExecutorDescription }) => new ActionExecutor(Object.values(x)[0], this));
+        return raw.map((x: { [key: string]: ActionInstanceDescription }) => new ActionInstance(Object.values(x)[0], this));
     }
     public href(): string {
         if (this.description.links) {

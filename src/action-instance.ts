@@ -6,7 +6,7 @@ import { Action } from "./action";
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export interface ActionExecutorDescription {
+export interface ActionInstanceDescription {
     input: {[key: string]: any};
     href: string;
     status: string;
@@ -14,8 +14,8 @@ export interface ActionExecutorDescription {
     timeCompleted?: string;
 }
 
-export class ActionExecutor {
-    constructor(public description: ActionExecutorDescription, public action: Action) {
+export class ActionInstance {
+    constructor(public description: ActionInstanceDescription, public action: Action) {
     }
     async update() {
         this.description = await this.action.device.client.get(this.href());

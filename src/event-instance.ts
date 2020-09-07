@@ -6,12 +6,12 @@ import { Event } from "./event";
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export interface EventLogDescription {
+export interface EventInstanceDescription {
     data?: any;
     timestamp: string;
 }
 
-export class EventLog {
-    constructor(public description: EventLogDescription, public event: Event) {
+export class EventInstance {
+    constructor(public description: EventInstanceDescription, public event: Event) {
     }
 }

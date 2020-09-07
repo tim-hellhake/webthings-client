@@ -11,8 +11,8 @@ import { PropertyDescription, Property } from "./property";
 import { ActionDescription, Action } from "./action";
 import { EventDescription, Event } from "./event";
 import { Link } from "./link";
-import { EventLog, EventLogDescription } from "./eventlog";
-import { ActionExecutor, ActionExecutorDescription } from "./actionexecutor";
+import { EventInstance, EventInstanceDescription } from "./event-instance";
+import { ActionInstance, ActionInstanceDescription } from "./action-instance";
 
 export interface DeviceDescription {
     title: string;
@@ -99,20 +99,20 @@ export class Device extends EventEmitter {
 
         throw Error('Device has no links');
     }
-    public async eventLog(): Promise<{ [key: string]: EventLog }[]> {
+    public async eventLog(): Promise<{ [key: string]: EventInstance }[]> {
         const raw = await this.client.get(this.eventsHref());
-        return raw.map((x: { [key: string]: EventLogDescription }) => {
+        return raw.map((x: { [key: string]: EventInstanceDescription }) => {
             const key = Object.keys(x)[0];
             const value = x[key];
-            return { [key]: new EventLog(value, this.events[key]) };
+            return { [key]: new EventInstance(value, this.events[key]) };
         });
     }
-    public async actionQueue(): Promise<{ [key: string]: ActionExecutor }[]> {
+    public async actionQueue(): Promise<{ [key: string]: ActionInstance }[]> {
         const raw = await this.client.get(this.actionsHref());
-        return raw.map((x: { [key: string]: ActionExecutorDescription }) => {
+        return raw.map((x: { [key: string]: ActionInstanceDescription }) => {
             const key = Object.keys(x)[0];
             const value = x[key];
-            return { [key]: new ActionExecutor(value, this.actions[key]) };
+            return { [key]: new ActionInstance(value, this.actions[key]) };
         });
     }
     public async connect(port = 8080) {
