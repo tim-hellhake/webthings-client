@@ -128,6 +128,9 @@ export class Device extends EventEmitter {
                                 case 'connected':
                                     this.emit('connectStateChanged', msg.data);
                                     break;
+                                case 'thingModified':
+                                    this.emit('thingModified', msg.data);
+                                    break;
                                 default:
                                     console.warn('Unknown message from device', this.id(), ':', msg.messageType, '(', msg.data, ')');
                             }

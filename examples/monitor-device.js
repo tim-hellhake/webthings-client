@@ -35,6 +35,9 @@ const token = '';
         device.on('connectStateChanged', (state) => {
             console.log(device.id(), ':', state ? 'connected' : 'disconnected');
         });
+        device.on('thingModified', () => {
+            console.log(device.id(), ':', 'modified');
+        });
         device.connect().then(() => {
             setTimeout(async () => {
                 await device.subscribeEvents(device.events);
