@@ -78,7 +78,7 @@ export class Device extends EventEmitter {
     }
     public async connect(port = 8080) {
         const href = this.href();
-        const socketUrl  = `ws://localhost:${port}${href}`;
+        const socketUrl  = `ws://${this.client.address}:${port}${href}`;
         const webSocketClient = new WebSocketClient();
 
         webSocketClient.on('connectFailed', (error: any) => {

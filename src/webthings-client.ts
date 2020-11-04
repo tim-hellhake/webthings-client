@@ -29,14 +29,14 @@ export class WebThingsClient extends EventEmitter {
             console.log(`HTTPS seems to be active, using port ${port} instead`);
         }
 
-        return new WebThingsClient('localhost', port, token, https, skipValidation);
+        return new WebThingsClient(address, port, token, https, skipValidation);
     }
 
     private protocol: string;
     private fetchOptions: RequestInit = {};
     private connection?: any;
 
-    constructor(private address: string, private port: number, public token: string, useHttps = false, skipValidation = false) {
+    constructor(public address: string, private port: number, public token: string, useHttps = false, skipValidation = false) {
         super();
         this.protocol = useHttps ? 'https' : 'http';
 
@@ -111,7 +111,7 @@ export class WebThingsClient extends EventEmitter {
     }
 
     public async connect(port = 8080) {
-        const socketUrl = `ws://localhost:${port}/things`;
+        const socketUrl = `ws://${this.address}:${port}/things`;
         const webSocketClient = new WebSocketClient();
 
         webSocketClient.on('connectFailed', (error: any) => {
