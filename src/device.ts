@@ -6,7 +6,7 @@
 
 import { WebThingsClient } from './webthings-client';
 import { EventEmitter } from 'events';
-import { client as WebSocketClient } from 'websocket';
+import { client as WebSocketClient, connection as WebSocketConnection } from 'websocket';
 import { PropertyDescription, Property } from './property';
 import { ActionDescription, Action } from './action';
 import { EventDescription, Event } from './event';
@@ -35,7 +35,7 @@ export class Device extends EventEmitter {
     public properties: { [key: string]: Property } = {};
     public actions: { [key: string]: Action } = {};
     public events: { [key: string]: Event } = {};
-    private connection?: any;
+    private connection?: WebSocketConnection;
     constructor(public description: DeviceDescription, public client: WebThingsClient) {
         super();
         for (const propertyName in description.properties) {
@@ -86,7 +86,7 @@ export class Device extends EventEmitter {
         });
 
         await new Promise((resolve) => {
-            webSocketClient.on('connect', async (connection: any) => {
+            webSocketClient.on('connect', async (connection: WebSocketConnection) => {
                 connection.on('error', (error: any) => {
                     this.emit('error', error);
                 });

@@ -6,7 +6,7 @@
 
 import fetch, { RequestInit } from 'node-fetch';
 import { EventEmitter } from 'events';
-import { client as WebSocketClient } from 'websocket';
+import { client as WebSocketClient, connection as WebSocketConnection } from 'websocket';
 import { Device, DeviceDescription } from './device';
 import { Event, EventDescription } from './event';
 import { Agent } from 'https';
@@ -34,7 +34,7 @@ export class WebThingsClient extends EventEmitter {
 
     private protocol: string;
     private fetchOptions: RequestInit = {};
-    private connection?: any;
+    private connection?: WebSocketConnection;
 
     constructor(public address: string, private port: number, public token: string, useHttps = false, skipValidation = false) {
         super();
@@ -119,7 +119,7 @@ export class WebThingsClient extends EventEmitter {
         });
 
         await new Promise((resolve) => {
-            webSocketClient.on('connect', async (connection: any) => {
+            webSocketClient.on('connect', async (connection: WebSocketConnection) => {
                 connection.on('error', (error: any) => {
                     this.emit('error', error);
                 });
