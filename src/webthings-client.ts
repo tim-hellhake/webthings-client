@@ -34,7 +34,7 @@ export class WebThingsClient extends EventEmitter {
 
     private protocol: string;
     private fetchOptions: RequestInit = {};
-    public connection?: any;
+    private connection?: any;
 
     constructor(private address: string, private port: number, public token: string, useHttps = false, skipValidation = false) {
         super();
@@ -184,6 +184,13 @@ export class WebThingsClient extends EventEmitter {
 
             webSocketClient.connect(`${socketUrl}?jwt=${this.token}`);
         });
+    }
+
+    public async disconnect() {
+        if (!this.connection) {
+            throw Error('Socket not connected!');
+        }
+        this.connection.close();
     }
 
     public async subscribeEvents(device: Device, events: { [key: string]: Event }) {

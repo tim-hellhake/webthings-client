@@ -35,7 +35,7 @@ export class Device extends EventEmitter {
     public properties: { [key: string]: Property } = {};
     public actions: { [key: string]: Action } = {};
     public events: { [key: string]: Event } = {};
-    public connection?: any;
+    private connection?: any;
     constructor(public description: DeviceDescription, public client: WebThingsClient) {
         super();
         for (const propertyName in description.properties) {
@@ -144,6 +144,12 @@ export class Device extends EventEmitter {
 
             webSocketClient.connect(`${socketUrl }?jwt=${this.client.token}`);
         });
+    }
+    public async disconnect() {
+        if (!this.connection) {
+            throw Error('Socket not connected!');
+        }
+        this.connection.close();
     }
     public async subscribeEvents(events: { [key: string]: Event }) {
         if (!this.connection) {
