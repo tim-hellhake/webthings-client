@@ -132,7 +132,7 @@ export class WebThingsClient extends EventEmitter {
                     if (message.type === 'utf8' && message.utf8Data) {
                         const msg = JSON.parse(message.utf8Data);
                         this.emit('message', msg.id, msg.data);
-                        if (msg.id && msg.data) {
+                        if ('id' in msg && 'data' in msg) {
                             switch (msg.messageType) {
                                 case 'propertyStatus':
                                     for (const key in msg.data) {
@@ -164,7 +164,7 @@ export class WebThingsClient extends EventEmitter {
                                 default:
                                     console.warn('Unknown message from socket', msg.id || '', ':', msg.messageType, '(', msg.data, ')');
                             }
-                        } else if (msg.data) {
+                        } else if ('data' in msg) {
                             switch (msg.messageType) {
                                 case 'actionStatus':
                                     if (Object.keys(msg.data).length == 1 && Object.keys(msg.data)[0] == 'pair') {

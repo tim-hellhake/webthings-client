@@ -99,7 +99,7 @@ export class Device extends EventEmitter {
                     if (message.type === 'utf8' && message.utf8Data) {
                         const msg = JSON.parse(message.utf8Data);
                         this.emit('message', msg.data);
-                        if (msg.id && msg.data) {
+                        if ('id' in msg && 'data' in msg) {
                             switch (msg.messageType) {
                                 case 'propertyStatus':
                                     for (const key in msg.data) {
