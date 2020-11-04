@@ -33,16 +33,16 @@ const token = '';
     webThingsClient.on('connectStateChanged', (device_id, state) => {
         console.log(device_id, ':', state ? 'connected' : 'disconnected');
     });
-    webThingsClient.on('thingModified', (device_id) => {
+    webThingsClient.on('deviceModified', (device_id) => {
         console.log(device_id, ':', 'modified');
     });
-    webThingsClient.on('thingAdded', async (device_id) => {
+    webThingsClient.on('deviceAdded', async (device_id) => {
         console.log(device_id, ':', 'added');
         const device = await webThingsClient.getDevice(device_id);
         await webThingsClient.subscribeEvents(device, device.events);
         console.log(device.id(), ':', 'Subscribed to all events');
     });
-    webThingsClient.on('thingRemoved', (device_id) => {
+    webThingsClient.on('deviceRemoved', (device_id) => {
         console.log(device_id, ':', 'removed');
     });
     webThingsClient.on('pair', (info) => {

@@ -78,7 +78,7 @@ export class Device extends EventEmitter {
     }
     public async connect(port = 8080) {
         const href = this.href();
-        const thingUrl = `ws://localhost:${port}${href}`;
+        const socketUrl  = `ws://localhost:${port}${href}`;
         const webSocketClient = new WebSocketClient();
 
         webSocketClient.on('connectFailed', (error: any) => {
@@ -129,7 +129,7 @@ export class Device extends EventEmitter {
                                     this.emit('connectStateChanged', msg.data);
                                     break;
                                 case 'thingModified':
-                                    this.emit('thingModified', msg.data);
+                                    this.emit('deviceModified', msg.data);
                                     break;
                                 default:
                                     console.warn('Unknown message from device', this.id(), ':', msg.messageType, '(', msg.data, ')');
@@ -142,7 +142,7 @@ export class Device extends EventEmitter {
                 resolve();
             });
 
-            webSocketClient.connect(`${thingUrl}?jwt=${this.client.token}`);
+            webSocketClient.connect(`${socketUrl }?jwt=${this.client.token}`);
         });
     }
     public async subscribeEvents(events: { [key: string]: Event }) {

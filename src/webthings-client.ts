@@ -153,13 +153,13 @@ export class WebThingsClient extends EventEmitter {
                                     this.emit('connectStateChanged', msg.id, msg.data);
                                     break;
                                 case 'thingModified':
-                                    this.emit('thingModified', msg.id, msg.data);
+                                    this.emit('deviceModified', msg.id, msg.data);
                                     break;
                                 case 'thingAdded':
-                                    this.emit('thingAdded', msg.id, msg.data);
+                                    this.emit('deviceAdded', msg.id, msg.data);
                                     break;
                                 case 'thingRemoved':
-                                    this.emit('thingRemoved', msg.id, msg.data);
+                                    this.emit('deviceRemoved', msg.id, msg.data);
                                     break;
                                 default:
                                     console.warn('Unknown message from socket', msg.id || '', ':', msg.messageType, '(', msg.data, ')');
