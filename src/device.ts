@@ -4,16 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { WebThingsClient } from "./webthings-client";
-import { EventEmitter } from "events";
-import { client as WebSocketClient } from "websocket";
-import { PropertyDescription, Property } from "./property";
-import { ActionDescription, Action } from "./action";
-import { EventDescription, Event } from "./event";
-import { Link } from "./link";
-import { EventInstance, EventInstanceDescription } from "./event-instance";
-import { ActionInstance, ActionInstanceDescription } from "./action-instance";
-import { hrefFromLinksArray } from "./helpers";
+import { WebThingsClient } from './webthings-client';
+import { EventEmitter } from 'events';
+import { client as WebSocketClient } from 'websocket';
+import { PropertyDescription, Property } from './property';
+import { ActionDescription, Action } from './action';
+import { EventDescription, Event } from './event';
+import { Link } from './link';
+import { EventInstance, EventInstanceDescription } from './event-instance';
+import { ActionInstance, ActionInstanceDescription } from './action-instance';
+import { hrefFromLinksArray } from './helpers';
 
 export interface DeviceDescription {
     title: string;

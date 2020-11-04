@@ -4,11 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { Link } from "./link";
-import { Device } from "./device";
-import { Property } from "./property";
-import { ActionInstance, ActionInstanceDescription } from "./action-instance";
-import { hrefFromLinksArray } from "./helpers";
+import { Link } from './link';
+import { Device } from './device';
+import { Property } from './property';
+import { ActionInstance, ActionInstanceDescription } from './action-instance';
+import { hrefFromLinksArray } from './helpers';
 
 export interface ActionDescription {
     title: string;

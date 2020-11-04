@@ -5,8 +5,8 @@
  */
 
 import fetch, { RequestInit } from 'node-fetch';
-import { EventEmitter } from "events";
-import { client as WebSocketClient } from "websocket";
+import { EventEmitter } from 'events';
+import { client as WebSocketClient } from 'websocket';
 import { Device, DeviceDescription } from './device';
 import { Event, EventDescription } from './event';
 import { Agent } from 'https';
@@ -19,10 +19,10 @@ export class WebThingsClient extends EventEmitter {
         let skipValidation = false;
         console.log(`Probing port ${port}`);
         const response = await fetch(`http://${address}:${port}`, {
-            redirect: "manual"
+            redirect: 'manual'
         });
 
-        if (response.headers.get("Location")) {
+        if (response.headers.get('Location')) {
             port = 4443;
             https = true;
             skipValidation = true;

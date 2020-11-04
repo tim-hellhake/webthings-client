@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { Action } from "./action";
+import { Action } from './action';
 
 export interface ActionInstanceDescription {
     input: { [key: string]: any };
