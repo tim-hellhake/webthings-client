@@ -11,7 +11,7 @@ const token = '';
 
 (async () => {
     const webThingsClient = await WebThingsClient.local(token);
-    // const webThingsClient = new WebThingsClient("gateway.local", 80, token);
+    // const webThingsClient = new WebThingsClient('gateway.local', 80, token);
     const devices = await webThingsClient.getDevices();
 
     for (const device of devices) {

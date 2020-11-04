@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { Link } from "./link";
-import { Device } from "./device";
-import { hrefFromLinksArray } from "./helpers";
+import { Link } from './link';
+import { Device } from './device';
+import { hrefFromLinksArray } from './helpers';
 
 export interface PropertyDescription {
     title: string;

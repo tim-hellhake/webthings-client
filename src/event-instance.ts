@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { Event } from "./event";
+import { Event } from './event';
 
 export interface EventInstanceDescription {
     data?: any;

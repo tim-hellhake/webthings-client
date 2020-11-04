@@ -4,16 +4,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { WebThingsClient } from "./webthings-client";
-import { EventEmitter } from "events";
-import { client as WebSocketClient } from "websocket";
-import { PropertyDescription, Property } from "./property";
-import { ActionDescription, Action } from "./action";
-import { EventDescription, Event } from "./event";
-import { Link } from "./link";
-import { EventInstance, EventInstanceDescription } from "./event-instance";
-import { ActionInstance, ActionInstanceDescription } from "./action-instance";
-import { hrefFromLinksArray } from "./helpers";
+import { WebThingsClient } from './webthings-client';
+import { EventEmitter } from 'events';
+import { client as WebSocketClient, connection as WebSocketConnection } from 'websocket';
+import { PropertyDescription, Property } from './property';
+import { ActionDescription, Action } from './action';
+import { EventDescription, Event } from './event';
+import { Link } from './link';
+import { EventInstance, EventInstanceDescription } from './event-instance';
+import { ActionInstance, ActionInstanceDescription } from './action-instance';
+import { hrefFromLinksArray } from './helpers';
 
 export interface DeviceDescription {
     title: string;
@@ -35,7 +35,7 @@ export class Device extends EventEmitter {
     public properties: { [key: string]: Property } = {};
     public actions: { [key: string]: Action } = {};
     public events: { [key: string]: Event } = {};
-    public connection?: any;
+    private connection?: WebSocketConnection;
     constructor(public description: DeviceDescription, public client: WebThingsClient) {
         super();
         for (const propertyName in description.properties) {
@@ -78,7 +78,7 @@ export class Device extends EventEmitter {
     }
     public async connect(port = 8080) {
         const href = this.href();
-        const thingUrl = `ws://localhost:${port}${href}`;
+        const socketUrl  = `ws://${this.client.address}:${port}${href}`;
         const webSocketClient = new WebSocketClient();
 
         webSocketClient.on('connectFailed', (error: any) => {
@@ -86,7 +86,7 @@ export class Device extends EventEmitter {
         });
 
         await new Promise((resolve) => {
-            webSocketClient.on('connect', async (connection: any) => {
+            webSocketClient.on('connect', async (connection: WebSocketConnection) => {
                 connection.on('error', (error: any) => {
                     this.emit('error', error);
                 });
@@ -99,7 +99,7 @@ export class Device extends EventEmitter {
                     if (message.type === 'utf8' && message.utf8Data) {
                         const msg = JSON.parse(message.utf8Data);
                         this.emit('message', msg.data);
-                        if (msg.id && msg.data) {
+                        if ('id' in msg && 'data' in msg) {
                             switch (msg.messageType) {
                                 case 'propertyStatus':
                                     for (const key in msg.data) {
@@ -129,7 +129,7 @@ export class Device extends EventEmitter {
                                     this.emit('connectStateChanged', msg.data);
                                     break;
                                 case 'thingModified':
-                                    this.emit('thingModified', msg.data);
+                                    this.emit('deviceModified', msg.data);
                                     break;
                                 default:
                                     console.warn('Unknown message from device', this.id(), ':', msg.messageType, '(', msg.data, ')');
@@ -142,8 +142,14 @@ export class Device extends EventEmitter {
                 resolve();
             });
 
-            webSocketClient.connect(`${thingUrl}?jwt=${this.client.token}`);
+            webSocketClient.connect(`${socketUrl }?jwt=${this.client.token}`);
         });
+    }
+    public async disconnect() {
+        if (!this.connection) {
+            throw Error('Socket not connected!');
+        }
+        this.connection.close();
     }
     public async subscribeEvents(events: { [key: string]: Event }) {
         if (!this.connection) {

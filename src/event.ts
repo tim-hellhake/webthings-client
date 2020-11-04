@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { Link } from "./link";
-import { Device } from "./device";
-import { EventInstance, EventInstanceDescription } from "./event-instance";
-import { hrefFromLinksArray } from "./helpers";
+import { Link } from './link';
+import { Device } from './device';
+import { EventInstance, EventInstanceDescription } from './event-instance';
+import { hrefFromLinksArray } from './helpers';
 
 export interface EventDescription {
     title: string;
