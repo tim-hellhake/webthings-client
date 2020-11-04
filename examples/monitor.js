@@ -48,13 +48,13 @@ const token = '';
     webThingsClient.on('pair', (info) => {
         console.log('pair', info.status);
     });
-    webThingsClient.connect().then(() => {
-        setTimeout(async () => {
-            const devices = await webThingsClient.getDevices();
-            for (const device of devices) {
-                await webThingsClient.subscribeEvents(device, device.events);
-                console.log(device.id(), ':', 'Subscribed to all events');
-            }
-        }, 100);
-    });
+    
+    await webThingsClient.connect();
+    setTimeout(async () => {
+        const devices = await webThingsClient.getDevices();
+        for (const device of devices) {
+            await webThingsClient.subscribeEvents(device, device.events);
+            console.log(device.id(), ':', 'Subscribed to all events');
+        }
+    }, 100);
 })();
