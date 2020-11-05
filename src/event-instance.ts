@@ -4,14 +4,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { Event } from './event';
+import {Event} from './event';
 
 export interface EventInstanceDescription {
-    data?: any;
+    data?: Record<string, unknown>;
     timestamp: string;
 }
 
 export class EventInstance {
-    constructor(public description: EventInstanceDescription, public event: Event) {
-    }
-} 
+  constructor(public description: EventInstanceDescription, public event: Event) {
+  }
+}

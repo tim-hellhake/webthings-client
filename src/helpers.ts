@@ -4,26 +4,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export function hrefFromLinksArray(links: any[], rel: string){
-    if (links) {
-        const actionLinks = links.filter(link => link.rel === rel);
+import {Link} from './link';
 
-        if (actionLinks.length > 0) {
-            if (actionLinks.length > 1) {
-                console.warn(`Multiple links to ${rel} found`);
-            }
+export function hrefFromLinksArray(links: Link[], rel: string): string {
+  if (links) {
+    const actionLinks = links.filter((link) => link.rel === rel);
 
-            const link = actionLinks[0];
+    if (actionLinks.length > 0) {
+      if (actionLinks.length > 1) {
+        console.warn(`Multiple links to ${rel} found`);
+      }
 
-            if (link.href) {
-                return link.href;
-            } else {
-                throw Error(`${rel} link has no href`)
-            }
-        } else {
-            throw Error(`${rel} has no link to ${rel}`);
-        }
+      const link = actionLinks[0];
+
+      if (link.href) {
+        return link.href;
+      } else {
+        throw Error(`${rel} link has no href`);
+      }
+    } else {
+      throw Error(`${rel} has no link to ${rel}`);
     }
+  }
 
-    throw Error(`${rel} has no links`);
+  throw Error(`${rel} has no links`);
 }

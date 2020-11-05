@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { Link } from './link';
-import { Device } from './device';
-import { hrefFromLinksArray } from './helpers';
+import {Link} from './link';
+import {Device} from './device';
+import {hrefFromLinksArray} from './helpers';
 
 export interface PropertyDescription {
     title: string;
@@ -21,18 +21,23 @@ export interface PropertyDescription {
     links: Link[];
 }
 
+type Value = string | number | boolean | null | undefined
+
 export class Property {
-    constructor(public name: string, public description: PropertyDescription, public device: Device) {
-    }
-    public async getValue(): Promise<any> {
-        const wrapper = await this.device.client.get(this.href());
-        return wrapper[this.name];
-    }
-    public async setValue(value: any) {
-        const wrapper = { [this.name]: value };
-        return this.device.client.put(this.href(), wrapper);
-    }
-    public href(): string {
-        return hrefFromLinksArray(this.description.links, 'property');
-    }
+  constructor(public name: string, public description: PropertyDescription, public device: Device) {
+  }
+
+  public async getValue(): Promise<Value> {
+    const wrapper = <Record<string, Value>> await this.device.client.get(this.href());
+    return wrapper[this.name];
+  }
+
+  public async setValue(value: Value): Promise<unknown> {
+    const wrapper = {[this.name]: value};
+    return this.device.client.put(this.href(), wrapper);
+  }
+
+  public href(): string {
+    return hrefFromLinksArray(this.description.links, 'property');
+  }
 }

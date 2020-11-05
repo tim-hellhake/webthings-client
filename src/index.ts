@@ -4,5 +4,5 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export * from './webthings-client'
-export * from './device'
+export * from './webthings-client';
+export * from './device';

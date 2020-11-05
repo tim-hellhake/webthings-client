@@ -14,12 +14,13 @@ jobs:
   
     - uses: actions/setup-node@v1
       with:
-        node-version: '8.x'
+        node-version: '10.x'
         registry-url: 'https://registry.npmjs.org'
 
     - name: Build project
       run: |
         npm ci
+        npm run lint
         npm run build
       env:
         CI: true

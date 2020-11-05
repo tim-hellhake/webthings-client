@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-import { Action } from './action';
+import {Action} from './action';
 
 export interface ActionInstanceDescription {
-    input: { [key: string]: any };
+    input: Record<string, unknown>;
     href: string;
     status: string;
     timeRequested?: string;
@@ -15,15 +15,18 @@ export interface ActionInstanceDescription {
 }
 
 export class ActionInstance {
-    constructor(public description: ActionInstanceDescription, public action: Action) {
-    }
-    async update() {
-        this.description = await this.action.device.client.get(this.href());
-    }
-    async cancel() {
-        await this.action.device.client.delete(this.href());
-    }
-    public href() {
-        return this.description.href;
-    }
+  constructor(public description: ActionInstanceDescription, public action: Action) {
+  }
+
+  async update(): Promise<void> {
+    this.description = <ActionInstanceDescription> await this.action.device.client.get(this.href());
+  }
+
+  async cancel(): Promise<void> {
+    await this.action.device.client.delete(this.href());
+  }
+
+  public href(): string {
+    return this.description.href;
+  }
 }
