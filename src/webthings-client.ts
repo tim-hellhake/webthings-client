@@ -38,6 +38,7 @@ export class WebThingsClient extends EventEmitter {
 
     private connection?: WebSocketConnection;
 
+    // eslint-disable-next-line no-unused-vars
     constructor(public address: string, private port: number, public token: string, useHttps = false, skipValidation = false) {
       super();
       this.protocol = useHttps ? 'https' : 'http';
@@ -118,7 +119,7 @@ export class WebThingsClient extends EventEmitter {
       const socketUrl = `ws://${this.address}:${port}/things`;
       const webSocketClient = new WebSocketClient();
 
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         webSocketClient.on('connect', async (connection: WebSocketConnection) => {
           connection.on('error', (error: Error) => {
             this.emit('error', error);

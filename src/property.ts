@@ -24,6 +24,7 @@ export interface PropertyDescription {
 type Value = string | number | boolean | null | undefined
 
 export class Property {
+  // eslint-disable-next-line no-unused-vars
   constructor(public name: string, public description: PropertyDescription, public device: Device) {
   }
 

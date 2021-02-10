@@ -12,6 +12,7 @@ export interface EventInstanceDescription {
 }
 
 export class EventInstance {
+  // eslint-disable-next-line no-unused-vars
   constructor(public description: EventInstanceDescription, public event: Event) {
   }
 }

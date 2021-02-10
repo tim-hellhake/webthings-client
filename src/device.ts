@@ -40,6 +40,7 @@ export class Device extends EventEmitter {
 
     private connection?: WebSocketConnection;
 
+    // eslint-disable-next-line no-unused-vars
     constructor(public description: DeviceDescription, public client: WebThingsClient) {
       super();
       for (const propertyName in description.properties) {
@@ -92,7 +93,7 @@ export class Device extends EventEmitter {
       const socketUrl = `ws://${this.client.address}:${port}${href}`;
       const webSocketClient = new WebSocketClient();
 
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         webSocketClient.on('connect', async (connection: WebSocketConnection) => {
           connection.on('error', (error: Error) => {
             this.emit('error', error);

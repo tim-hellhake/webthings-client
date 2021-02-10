@@ -21,6 +21,7 @@ export interface ActionDescription {
 }
 
 export class Action {
+  // eslint-disable-next-line no-unused-vars
   constructor(public name: string, public description: ActionDescription, public device: Device) {
   }
 
