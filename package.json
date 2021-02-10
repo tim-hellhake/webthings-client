@@ -1,6 +1,6 @@
 {
   "name": "webthings-client",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Access Web Things via the REST api",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
