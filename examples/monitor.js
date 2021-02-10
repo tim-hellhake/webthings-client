@@ -12,9 +12,6 @@ const token = '';
 (async () => {
     const webThingsClient = await WebThingsClient.local(token);
 
-    webThingsClient.on('connectFailed', (device_id) => {
-        console.log(device_id, ':', 'Failed to connect');
-    });
     webThingsClient.on('error', (error) => {
         console.log('Something went wrong', error);
     });
@@ -49,12 +46,17 @@ const token = '';
         console.log('pair', info.status);
     });
     
-    await webThingsClient.connect();
-    setTimeout(async () => {
-        const devices = await webThingsClient.getDevices();
-        for (const device of devices) {
-            await webThingsClient.subscribeEvents(device, device.events);
-            console.log(device.id(), ':', 'Subscribed to all events');
-        }
-    }, 100);
+    try {
+        await webThingsClient.connect();
+
+        setTimeout(async () => {
+            const devices = await webThingsClient.getDevices();
+            for (const device of devices) {
+                await webThingsClient.subscribeEvents(device, device.events);
+                console.log(device.id(), ':', 'Subscribed to all events');
+            }
+        }, 100);
+    } catch(e) {
+        console.warn(`Could not connect to gateway`);
+    }
 })();

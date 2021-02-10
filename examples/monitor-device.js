@@ -14,9 +14,6 @@ const token = '';
     const devices = await webThingsClient.getDevices();
 
     for (const device of devices) {
-        device.on('connectFailed', () => {
-            console.log(device.id(), ':', 'Failed to connect');
-        });
         device.on('error', (error) => {
             console.log(device.id(), ':', 'Something went wrong', error);
         });
@@ -38,11 +35,16 @@ const token = '';
         device.on('deviceModified', () => {
             console.log(device.id(), ':', 'modified');
         });
-        device.connect().then(() => {
+        
+        try {
+            await device.connect();
+
             setTimeout(async () => {
                 await device.subscribeEvents(device.events);
                 console.log(device.id(), ':', 'Subscribed to all events');
             }, 100);
-        });
+        } catch(e) {
+            console.warn(`Could not connect to device ${device}`);
+        }
     }
 })();

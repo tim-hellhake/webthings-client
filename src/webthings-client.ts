@@ -118,11 +118,7 @@ export class WebThingsClient extends EventEmitter {
       const socketUrl = `ws://${this.address}:${port}/things`;
       const webSocketClient = new WebSocketClient();
 
-      webSocketClient.on('connectFailed', (error: Error) => {
-        this.emit('connectFailed', error);
-      });
-
-      await new Promise((resolve) => {
+      await new Promise((resolve, reject) => {
         webSocketClient.on('connect', async (connection: WebSocketConnection) => {
           connection.on('error', (error: Error) => {
             this.emit('error', error);
@@ -184,6 +180,10 @@ export class WebThingsClient extends EventEmitter {
 
           this.connection = connection;
           resolve();
+        });
+
+        webSocketClient.on('connectFailed', (error: Error) => {
+          reject(error);
         });
 
         webSocketClient.connect(`${socketUrl}?jwt=${this.token}`);
