@@ -121,6 +121,8 @@ export class WebThingsClient extends EventEmitter {
 
       await new Promise<void>((resolve, reject) => {
         webSocketClient.on('connect', async (connection: WebSocketConnection) => {
+          console.log('connected on', socketUrl);
+
           connection.on('error', (error: Error) => {
             this.emit('error', error);
           });
