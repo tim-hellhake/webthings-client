@@ -4,5 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.*
  */
 
-export * from './webthings-client';
+export * from './action-instance';
+export * from './action';
 export * from './device';
+export * from './event-instance';
+export * from './event';
+export * from './helpers';
+export * from './link';
+export * from './property';
+export * from './webthings-client';
