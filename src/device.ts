@@ -59,7 +59,7 @@ export class Device extends EventEmitter {
     }
 
     public id(): string {
-      return this.href().substr(this.href().lastIndexOf('/') + 1);
+      return decodeURIComponent(this.href().substr(this.href().lastIndexOf('/') + 1));
     }
 
     public actionsHref(): string {
